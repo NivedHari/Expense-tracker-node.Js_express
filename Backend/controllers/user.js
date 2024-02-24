@@ -1,4 +1,6 @@
+const { response } = require("express");
 const User = require("../models/user");
+const bcrypt = require("bcrypt");
 
 exports.signUp = (req, res, next) => {
   const name = req.body.name;
@@ -9,18 +11,23 @@ exports.signUp = (req, res, next) => {
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
+    bcrypt.hash(password, 10, async (err, hash) => {
+      if (err) {
+        console.log(err);
+      }
 
-    User.create({
-      name,
-      email,
-      password,
-    })
-      .then((user) => {
-        return res.status(201).json({ user });
+      await User.create({
+        name,
+        email,
+        password: hash,
       })
-      .catch((err) => {
-        return res.status(500).json({ message: "Failed to create user" });
-      });
+        .then((user) => {
+          return res.status(201).json({ user });
+        })
+        .catch((err) => {
+          return res.status(500).json({ message: "Failed to create user" });
+        });
+    });
   });
 };
 
@@ -32,10 +39,15 @@ exports.login = (req, res, next) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      if (user.password !== password) {
-        return res.status(401).json({ message: "User not authorized" });
-      }
-      res.status(200).json({ message: "User login successful" });
+      bcrypt.compare(password, user.password, (err, response) => {
+        if (err) {
+          console.log(err);
+          return res.status(401).json({ message: "User not authorized" });
+        }
+        if (response) {
+          res.status(200).json({ message: "User login successful" });
+        }
+      });
     })
     .catch((err) => {
       console.log(err);
