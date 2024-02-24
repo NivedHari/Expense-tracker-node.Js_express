@@ -15,13 +15,13 @@ function addUser(event) {
     password,
   };
 
-  fetch("http://localhols:3000/user/signup", {
-    method: "POST",
-    body: JSON.stringify(user),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
+  fetch("http://localhost:3000/user/signUp", {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(user)
+})
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -33,6 +33,10 @@ function addUser(event) {
       form.reset(); 
     })
     .catch((err) => {
-      console.log(err);
+      if (err.message === "Email already exists") {
+        console.log("Email already exists");
+      } else {
+        console.error("Error:", err);
+      }
     });
 }
