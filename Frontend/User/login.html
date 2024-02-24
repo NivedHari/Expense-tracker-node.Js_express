@@ -12,11 +12,8 @@
             <div class="logo">Expense Tracker</div>
           </div>
       <div class="form-div">
-        <h2>Sign up</h2>
+        <h2>Login</h2>
         <form class="form-control">
-          <div class="form-controls">
-            <input type="text" name="name" id="name" placeholder="Your name" />
-          </div>
           <div class="form-controls">
             <input
               type="email"
@@ -33,11 +30,12 @@
               placeholder="Password"
             />
           </div>
+          <input type="hidden" value="login" id="mode">
           <div class="form-action">
-            <button type="submit">Sign up</button>
+            <button type="submit">Login</button>
           </div>
         </form>
-        <a href="#">Already have an account? Login</a>
+        <a href="signUp.html">Doesn't have an Account? Sign up</a>
       </div>
     </div>
     <script src="index.js"></script>

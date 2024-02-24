@@ -30,7 +30,7 @@ body{
 }
 
 .form-div a:hover,.form-div a:active{
-    color: blue;
+    color: rgb(31, 113, 195);
 }
 
 .form-control input {
