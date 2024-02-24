@@ -3,16 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
     <link rel="stylesheet" href="styles.css" />
     <title>Expense Tracker</title>
   </head>
   <body>
     <div class="page">
-        <div class="navbar">
-            <div class="logo">Expense Tracker</div>
-          </div>
+      <div class="navbar">
+        <div class="logo">
+          <span class="material-symbols-outlined"> incomplete_circle </span
+          >Expense Tracker
+        </div>
+      </div>
       <div class="form-div">
-        <h2>Sign up</h2>
+        <h2>Create an account</h2>
         <form class="form-control">
           <div class="form-controls">
             <input type="text" name="name" id="name" placeholder="Your name" />
@@ -33,9 +40,9 @@
               placeholder="Password"
             />
           </div>
-          <input type="hidden" value="signUp" id="mode">
+          <input type="hidden" value="signUp" id="mode" />
           <div class="form-action">
-            <button type="submit">Sign up</button>
+            <button type="submit">Create an account</button>
           </div>
         </form>
         <a href="login.html">Already have an account? Login</a>

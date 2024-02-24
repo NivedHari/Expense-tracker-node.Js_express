@@ -12,9 +12,12 @@ body{
 
 }
 
-.title{
-    margin-top: 5rem;
-}
+.material-icons-outlined {
+    font-family: 'Material Symbols Outlined', sans-serif;
+  }
+  
+
+
 
 .form-div{
     display: flex;
@@ -24,6 +27,11 @@ body{
     width: 30rem;
     padding: 1.5rem;
     border-radius: 15px;
+}
+
+.form-div h2{
+    text-align: left; 
+    /* margin-left: 3rem; */
 }
 .form-div a {
     color: rgb(161, 161, 161);
@@ -62,11 +70,24 @@ body{
 .navbar {
     border-bottom: 1px solid #ccccccbf;
     padding: 10px 0;
-    margin-left: 1rem;
     text-align: left;
+    align-items: left;
+    justify-content: center;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .navbar span{
+    margin-right: 1rem;
+    font-size: 1.2rem;
   }
   
   .logo {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: bolder;
+    margin-left: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
   }

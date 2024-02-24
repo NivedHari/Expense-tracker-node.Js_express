@@ -3,14 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
     <link rel="stylesheet" href="styles.css" />
     <title>Expense Tracker</title>
   </head>
   <body>
     <div class="page">
-        <div class="navbar">
-            <div class="logo">Expense Tracker</div>
-          </div>
+      <div class="navbar">
+        <div class="logo">
+          <span class="material-symbols-outlined"> incomplete_circle </span
+          >Expense Tracker
+        </div>
+      </div>
       <div class="form-div">
         <h2>Login</h2>
         <form class="form-control">
@@ -30,12 +37,12 @@
               placeholder="Password"
             />
           </div>
-          <input type="hidden" value="login" id="mode">
+          <input type="hidden" value="login" id="mode" />
           <div class="form-action">
             <button type="submit">Login</button>
           </div>
         </form>
-        <a href="signUp.html">Doesn't have an Account? Sign up</a>
+        <a href="signUp.html">Don't have an account? Sign up</a>
       </div>
     </div>
     <script src="index.js"></script>
