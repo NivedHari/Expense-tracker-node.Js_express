@@ -63,12 +63,16 @@ function addUser(event) {
     })
       .then((response) => {
         if (response.ok) {
-          alert("Login Successful");
+          window.location.href = "../expense/expense.html";
         }
         if (!response.ok) {
           alert(response.statusText);
           throw new Error(response.statusText);
         }
+        return response.json();
+      })
+      .then((data) => {
+        localStorage.setItem("token", data.token);
       })
       .catch((err) => {
         console.error("Error:", err);

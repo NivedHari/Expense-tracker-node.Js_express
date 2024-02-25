@@ -8,7 +8,7 @@ body {
 }
 .navbar {
   border-bottom: 1px solid #ccccccbf;
-  padding: 10px 0;
+  padding: 15px 0;
   text-align: left;
   align-items: left;
   justify-content: center;
@@ -102,7 +102,66 @@ body {
   align-items:flex-start;
   padding: 1.5rem;
 }
-
 .expense-list{
   list-style: none;
+}
+
+.expense-list li{
+  margin-left: -2.5rem;
+  /* margin-bottom: 2rem; */
+  padding: 1.5rem 0;
+  /* background-color: rgb(232, 233, 240); */
+  width: 67rem;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+
+
+li:hover .deleteBtn {
+  display: inline-block;
+}
+
+.icon{
+  background-color: rgb(232, 233, 240);
+  padding: 1rem;
+  font-size: 1.5rem;
+  border-radius: 10px;
+  margin-right: 1rem;
+}
+
+
+.stacked {
+  display: flex;
+  flex-direction: column;
+  margin-right: 22rem;
+}
+
+.price{
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.category{
+  color: rgb(92, 92, 92);
+  font-size: 1.1rem;
+}
+
+.deleteBtn{
+  position: absolute;
+  right: 0;
+  /* display: none; */
+  background-color: white;
+  color: rgb(78, 78, 78);
+  border: none;
+}
+.deleteBtn:hover{
+ cursor: pointer;
+ color: red;
+}
+.deleteBtn:active{
+ cursor: pointer;
+ color: red;
 }

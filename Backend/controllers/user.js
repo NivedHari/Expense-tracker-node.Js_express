@@ -1,6 +1,7 @@
 const { response } = require("express");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.signUp = (req, res, next) => {
   const name = req.body.name;
@@ -45,7 +46,12 @@ exports.login = (req, res, next) => {
           return res.status(401).json({ message: "User not authorized" });
         }
         if (response) {
-          res.status(200).json({ message: "User login successful" });
+          res
+            .status(200)
+            .json({
+              message: "User login successful",
+              token: generateToken(user.id, user.name, user.email),
+            });
         }
       });
     })
@@ -54,3 +60,7 @@ exports.login = (req, res, next) => {
       res.status(500).json({ message: "Internal server error" });
     });
 };
+
+function generateToken(id, name, email) {
+  return jwt.sign({ userId: id, name: name, email: email }, "12345678910");
+}
