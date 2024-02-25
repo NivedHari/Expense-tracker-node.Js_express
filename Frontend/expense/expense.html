@@ -13,8 +13,9 @@
   <body>
     <div class="navbar">
       <div class="logo">
-        <span class="material-icons"> incomplete_circle</span>Expense Tracker
+        <span class="material-icons"> incomplete_circle</span>Expense Tracker<span id="premium-badge">Premium</span>
       </div>
+      <span id="logout">Logout</span>
     </div>
     <div class="form-div">
       <div>
@@ -41,14 +42,17 @@
         <div class="form-action">
           <button type="submit" value="add-expense">Add expense</button>
           <button type="button" id="premium-btn">Get Premium</button>
-          
-
+          <button type="button" id="leader-btn">Show Leaderboard</button>
         </div>
       </form>
     </div>
     <div class="list-div">
       <h3>Recent Expenses</h3>
       <ul class="expense-list" id="expense-list"></ul>
+    </div>
+    <div class="leader-div" id="leader-div">
+      <h3>Leaderboard</h3>
+      <ol class="leader-list" id="leader-list"></ol>
     </div>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="index.js"></script>

@@ -1,5 +1,6 @@
 const form = document.querySelector(".form-control");
 const expenseList = document.getElementById("expense-list");
+const leaderList = document.getElementById("leader-list");
 
 form.addEventListener("submit", addExpense);
 
@@ -47,6 +48,12 @@ function fetchExpenses() {
   })
     .then((response) => response.json())
     .then((data) => {
+      if (!data.user.isPremium) {
+        document.getElementById("premium-btn").style.display = "block";
+      } else if (data.user.isPremium) {
+        document.getElementById("premium-badge").style.display = "block";
+        document.getElementById("leader-btn").style.display = "block";
+      }
       displayExpenses(data.expenses);
     })
     .catch((err) => {
@@ -139,6 +146,7 @@ document.getElementById("premium-btn").onclick = function (e) {
             .then((updateResponse) => {
               if (updateResponse.ok) {
                 alert("You are a premium user");
+                window.location.reload();
               } else {
                 throw new Error("Failed to update premium status");
               }
@@ -156,6 +164,62 @@ document.getElementById("premium-btn").onclick = function (e) {
       console.log(err);
     });
 };
+
+document.getElementById("leader-btn").onclick = function (e) {
+  document.getElementById("leader-div").style.display = 'block';
+  const token = localStorage.getItem("token");
+  fetch("http://localhost:3000/expense/leaderboard", {
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      displayLeaderboard(data.expenses);
+    });
+};
+
+function displayLeaderboard(expenses) {
+  let listNumber = 1;
+  leaderList.innerHTML = "";
+  expenses.forEach((expense) => {
+    console.log(expense)
+    const li = document.createElement("li");
+
+    
+
+    const numberSpan = document.createElement("span");
+    numberSpan.className = "number";
+    numberSpan.textContent = listNumber;
+    listNumber++;
+
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "name";
+    nameSpan.textContent = expense["user.name"];
+
+    const groupDiv = document.createElement("div");
+    groupDiv.appendChild(numberSpan);
+    groupDiv.appendChild(nameSpan);
+
+    const expenseSpan = document.createElement("span");
+    expenseSpan.className = "expense";
+    expenseSpan.textContent = `$${expense.total}`;
+
+    li.appendChild(groupDiv);
+    li.appendChild(expenseSpan);
+
+    leaderList.appendChild(li);
+  });
+}
+
+document.getElementById("logout").addEventListener("click", logout);
+function logout(event) {
+  localStorage.removeItem("token");
+  fetchExpenses();
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("token") === null) {

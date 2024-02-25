@@ -88,24 +88,27 @@ exports.handlePremium = (req, res, next) => {
   });
 };
 
-exports.updatePremium = (req, res, next) => {
-  const payment_id = req.body.payment_id;
-  const order_id = req.body.order_id;
-  Order.findOne({ where: { orderId: order_id } })
-    .then((order) => {
-      order.update({ paymentId: payment_id, status: "SUCCESS" });
-    })
-    .then(() => {
-      req.user.update({ isPremium: true }).then(() => {
-        return res
-          .status(202)
-          .json({ success: true, message: "Transaction Successfull" });
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+exports.updatePremium = async (req, res, next) => {
+  try {
+    const payment_id = req.body.payment_id;
+    const order_id = req.body.order_id;
+    const order = await Order.findOne({ where: { orderId: order_id } });
+
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    await order.update({ paymentId: payment_id, status: "SUCCESS" });
+
+    await req.user.update({ isPremium: true });
+
+    return res.status(202).json({ success: true, message: "Transaction Successful" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
 };
+
 
 function generateToken(id, name, email) {
   return jwt.sign({ userId: id, name: name, email: email }, "12345678910");

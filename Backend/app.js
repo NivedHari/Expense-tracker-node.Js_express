@@ -1,9 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-require('dotenv').config();
-
-
-
+require("dotenv").config();
 
 const sequelize = require("../Backend/utils/database");
 
@@ -22,8 +19,12 @@ app.use(express.json());
 app.use(userRoutes);
 app.use(expenseRoutes);
 
-Expense.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
-User.hasMany(Expense);
+Expense.belongsTo(User, {
+  constraints: true,
+  onDelete: "CASCADE",
+  foreignKey: "userId",
+});
+User.hasMany(Expense, { foreignKey: "userId" });
 Order.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Order);
 
