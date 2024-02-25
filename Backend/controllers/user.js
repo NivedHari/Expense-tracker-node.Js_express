@@ -1,7 +1,9 @@
 const { response } = require("express");
 const User = require("../models/user");
+const Order = require("../models/order");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Razorpay = require("razorpay");
 
 exports.signUp = (req, res, next) => {
   const name = req.body.name;
@@ -46,18 +48,62 @@ exports.login = (req, res, next) => {
           return res.status(401).json({ message: "User not authorized" });
         }
         if (response) {
-          res
-            .status(200)
-            .json({
-              message: "User login successful",
-              token: generateToken(user.id, user.name, user.email),
-            });
+          res.status(200).json({
+            message: "User login successful",
+            token: generateToken(user.id, user.name, user.email),
+          });
         }
       });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json({ message: "Internal server error" });
+    });
+};
+
+exports.handlePremium = (req, res, next) => {
+  const razorPay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+  const amount = 2500;
+  razorPay.orders.create({ amount, currency: "INR" }, (err, order) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).json({ message: "Failed to create order" });
+    }
+    req.user
+      .createOrder({ orderId: order.id, status: "PENDING" })
+      .then(() => {
+        return res
+          .status(201)
+          .json({ order, key_id: process.env.RAZORPAY_KEY_ID });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res
+          .status(500)
+          .json({ message: "Failed to create order for user" });
+      });
+  });
+};
+
+exports.updatePremium = (req, res, next) => {
+  const payment_id = req.body.payment_id;
+  const order_id = req.body.order_id;
+  Order.findOne({ where: { orderId: order_id } })
+    .then((order) => {
+      order.update({ paymentId: payment_id, status: "SUCCESS" });
+    })
+    .then(() => {
+      req.user.update({ isPremium: true }).then(() => {
+        return res
+          .status(202)
+          .json({ success: true, message: "Transaction Successfull" });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 

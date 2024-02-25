@@ -5,6 +5,7 @@ form.addEventListener("submit", addExpense);
 
 function addExpense(event) {
   event.preventDefault();
+
   const token = localStorage.getItem("token");
   console.log(token);
 
@@ -35,6 +36,9 @@ function addExpense(event) {
 }
 
 function fetchExpenses() {
+  if (localStorage.getItem("token") === null) {
+    window.location.href = "../User/login.html";
+  }
   const token = localStorage.getItem("token");
   fetch("http://localhost:3000/expense", {
     headers: {
@@ -102,6 +106,60 @@ function deleteExp(id) {
     });
 }
 
+document.getElementById("premium-btn").onclick = function (e) {
+  const token = localStorage.getItem("token");
+  fetch(`http://localhost:3000/user/premium`, {
+    method: "GET",
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to fetch premium data");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      var options = {
+        key: data.key_id,
+        order_id: data.order.id,
+        handler: function (response) {
+          fetch(`http://localhost:3000/user/premium/update`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+            body: JSON.stringify({
+              order_id: options.order_id,
+              payment_id: response.razorpay_payment_id,
+            }),
+          })
+            .then((updateResponse) => {
+              if (updateResponse.ok) {
+                alert("You are a premium user");
+              } else {
+                throw new Error("Failed to update premium status");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        },
+      };
+      var rzp1 = new Razorpay(options);
+      rzp1.open();
+      e.preventDefault();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("token") === null) {
+    window.location.href = "../User/login.html";
+  }
   fetchExpenses();
 });

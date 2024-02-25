@@ -11,42 +11,46 @@
     <title>Expense Tracker</title>
   </head>
   <body>
-      <div class="navbar">
-        <div class="logo">
-          <span class="material-icons"> incomplete_circle</span>Expense Tracker
-        </div>
+    <div class="navbar">
+      <div class="logo">
+        <span class="material-icons"> incomplete_circle</span>Expense Tracker
       </div>
-      <div class="form-div">
+    </div>
+    <div class="form-div">
+      <div>
+        <h2>Add an expense</h2>
+      </div>
+      <form class="form-control">
         <div>
-          <h2>Add an expense</h2>
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" placeholder="$.0.00" />
         </div>
-        <form class="form-control">
-          <div>
-            <label for="amount">Amount</label>
-            <input type="number" id="amount" placeholder="$.0.00"/>
-          </div>
-          <div>
-            <label for="category">Category</label>
-            <select id="category">
-              <option value="food">Food</option>
-              <option value="petrol">Petrol</option>
-              <option value="salary">Salary</option>
-              <option value="salary">Groceries</option>
-            </select>
-          </div>
-          <div>
-            <label for="description">Description</label>
-            <input type="text" id="description" placeholder="eg. Groceries"/>
-          </div>
-          <div class="form-action">
-            <button type="submit">Add expense</button>
-          </div>
-        </form>
-      </div>
-      <div class="list-div">
-        <h3>Recent Expenses</h3>
-        <ul class="expense-list" id="expense-list"></ul>
-      </div>
+        <div>
+          <label for="category">Category</label>
+          <select id="category">
+            <option value="food">Food</option>
+            <option value="petrol">Petrol</option>
+            <option value="salary">Salary</option>
+            <option value="salary">Groceries</option>
+          </select>
+        </div>
+        <div>
+          <label for="description">Description</label>
+          <input type="text" id="description" placeholder="eg. Groceries" />
+        </div>
+        <div class="form-action">
+          <button type="submit" value="add-expense">Add expense</button>
+          <button type="button" id="premium-btn">Get Premium</button>
+          
+
+        </div>
+      </form>
+    </div>
+    <div class="list-div">
+      <h3>Recent Expenses</h3>
+      <ul class="expense-list" id="expense-list"></ul>
+    </div>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="index.js"></script>
   </body>
 </html>

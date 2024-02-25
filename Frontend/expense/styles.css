@@ -32,7 +32,7 @@ body {
 
 .form-div{
     display: flex;
-    margin-left: 12rem;
+    margin-left: 17rem;
     flex-direction: column;
     align-items:flex-start;
     width: 72rem;
@@ -89,15 +89,32 @@ body {
     background-color: rgb(38, 102, 166);
 }
 
-/* .form-action{
-    width: 40rem;
+.form-action{
+  width: calc(100vw - 37rem);
     display: flex;
-    justify-content: flex-end;
-} */
+    justify-content: space-between;
+}
+
+
+
+#premium-btn {
+  border: none;
+  padding: 0.7rem 2rem;
+  border-radius: 15px;
+  width: 11rem;
+  font-size: 1rem;
+  background-color: rgb(238, 238, 238);
+  color: black;
+  font-weight: bold;
+}
+#premium-btn:hover,#premium-btn:active {
+  cursor: pointer;
+  background-color: rgb(231, 231, 231);
+}
 
 .list-div{
   display: flex;
-  margin-left: 12rem;
+  margin-left: 17rem;
   flex-direction: column;
   align-items:flex-start;
   padding: 1.5rem;
@@ -111,14 +128,19 @@ body {
   /* margin-bottom: 2rem; */
   padding: 1.5rem 0;
   /* background-color: rgb(232, 233, 240); */
-  width: 67rem;
+  /* width: 67rem; */
+  width: calc(100vw - 37rem);
   border-radius: 15px;
   display: flex;
   align-items: center;
+  text-align: center;
   position: relative;
 }
 
-
+.form-action{
+  /* background-color: red; */
+  width: calc(100vw - 37rem);
+}
 
 li:hover .deleteBtn {
   display: inline-block;
@@ -165,3 +187,4 @@ li:hover .deleteBtn {
  cursor: pointer;
  color: red;
 }
+

@@ -10,11 +10,10 @@ exports.postExpense = (req, res, next) => {
   const category = req.body.category;
   const description = req.body.description;
 
-  Expense.create({
+  user.createExpense({
     amount,
     category,
     description,
-    userId: user.id,
   })
     .then((expense) => {
       return res.status(201).json({ expense });
