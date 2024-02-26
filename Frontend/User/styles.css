@@ -41,13 +41,17 @@ body{
     color: rgb(31, 113, 195);
 }
 
+.form-div p{
+    width:28rem;
+}
+
 .form-control input {
     margin: 1rem;
     border: none;
     border-radius: 10px;
     padding: 1rem 2rem;
     background-color: rgb(232, 233, 240);
-    width: 20rem;
+    width: 23rem;
     font-size: 1rem;
     font-family: inherit;
     outline: none;
@@ -58,7 +62,7 @@ body{
     padding: 0.5rem;
     border-radius: 10px;
     margin: 1rem;
-    width: 24rem;
+    width: 27rem;
     font-size: 1rem;
     background-color: rgb(31, 113, 195);
     color: white;}
@@ -91,3 +95,4 @@ body{
     align-items: center;
 
   }
+

@@ -4,6 +4,13 @@ const Order = require("../models/order");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Razorpay = require("razorpay");
+const Sib = require("sib-api-v3-sdk");
+const client = Sib.ApiClient.instance;
+
+const apiKey = client.authentications["api-key"];
+apiKey.apiKey = process.env.API_KEY;
+
+const tranEmailApi = new Sib.TransactionalEmailsApi();
 
 exports.signUp = (req, res, next) => {
   const name = req.body.name;
@@ -152,6 +159,28 @@ exports.getLeaderboard = (req, res, next) => {
   //   .catch((err) => {
   //     console.log(err);
   //   });
+};
+
+exports.forgotPassword = (req, res, next) => {
+  const userEmail = req.body.email;
+
+  const sender = {
+    email: "nivedhari44@gmail.com",
+    name: "Nived Hari",
+  };
+
+  const receivers = [{ email: `${userEmail}` }];
+
+  tranEmailApi
+    .sendTransacEmail({
+      sender,
+      to: receivers,
+      subject: "Reset your password",
+      htmlContent: `<h1>Reset Your Password</h1>`,
+    })
+    .then(console.log)
+    .catch(console.log);
+
 };
 
 function generateToken(id, name, email) {

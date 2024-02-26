@@ -45,7 +45,7 @@ function addUser(event) {
       .catch((err) => {
         console.error("Error:", err);
       });
-  } else {
+  } else if (mode === "login") {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
@@ -75,5 +75,20 @@ function addUser(event) {
       .catch((err) => {
         console.error("Error:", err);
       });
+  } else if (mode === "forgot") {
+    const email = document.getElementById("email").value;
+
+    fetch("http://localhost:3000/user/forgotPassword", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    })
+    .then((data) => {
+      console.log("Success:", data);
+      form.reset();
+    })
+      .catch((err) => console.log(err));
   }
 }
