@@ -62,9 +62,6 @@ function addUser(event) {
       body: JSON.stringify(user),
     })
       .then((response) => {
-        if (response.ok) {
-          window.location.href = "../expense/expense.html";
-        }
         if (!response.ok) {
           alert(response.statusText);
           throw new Error(response.statusText);
@@ -73,6 +70,7 @@ function addUser(event) {
       })
       .then((data) => {
         localStorage.setItem("token", data.token);
+        window.location.href = "../expense/expense.html";
       })
       .catch((err) => {
         console.error("Error:", err);

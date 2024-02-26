@@ -24,7 +24,7 @@ Expense.belongsTo(User, {
   onDelete: "CASCADE",
   foreignKey: "userId",
 });
-User.hasMany(Expense, { foreignKey: "userId" });
+User.hasMany(Expense);
 Order.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Order);
 
