@@ -1,11 +1,14 @@
 const { response } = require("express");
 const User = require("../models/user");
 const Order = require("../models/order");
+const ResetRequests = require("../models/resetPassword");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Razorpay = require("razorpay");
 const Sib = require("sib-api-v3-sdk");
 const client = Sib.ApiClient.instance;
+const { v4: uuidv4 } = require("uuid");
+const path = require("path");
 
 const apiKey = client.authentications["api-key"];
 apiKey.apiKey = process.env.API_KEY;
@@ -161,8 +164,27 @@ exports.getLeaderboard = (req, res, next) => {
   //   });
 };
 
-exports.forgotPassword = (req, res, next) => {
+exports.forgotPassword = async (req, res, next) => {
   const userEmail = req.body.email;
+
+  const user = await User.findOne({ where: { email: userEmail } });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const requestId = uuidv4();
+
+  console.log("request id:", requestId);
+
+  await user.createResetRequest({
+    requestId: requestId,
+    isActive: true,
+  });
+
+  const resetUrl = `http://localhost:3000/password/resetpassword/${requestId}?email=${userEmail}`;
+  const emailContent = `<h1>Reset Your Password</h1><hr> <h3>Click on the following link to <strong>reset your password</strong>:<br> ${resetUrl}</h3>`;
+
+  console.log(resetUrl);
 
   const sender = {
     email: "nivedhari44@gmail.com",
@@ -176,11 +198,57 @@ exports.forgotPassword = (req, res, next) => {
       sender,
       to: receivers,
       subject: "Reset your password",
-      htmlContent: `<h1>Reset Your Password</h1>`,
+      htmlContent: emailContent,
     })
-    .then(console.log)
+    .then(() =>
+      res.status(200).json({ message: "Reset password link sent successfully" })
+    )
     .catch(console.log);
+};
 
+exports.resetPassword = async (req, res, next) => {
+  const uuid = req.params.uuid;
+  console.log(uuid);
+  const resetRequest = await ResetRequests.findOne({
+    where: { id: uuid },
+  });
+  if (!resetRequest || !resetRequest.isActive) {
+    return res
+      .status(404)
+      .json({ message: "Reset request not found or expired" });
+  }
+  res.sendFile(path.join(__dirname, "public", "reset.html"));
+};
+
+exports.changePassword = async (req, res, next) => {
+  const { password, email, uuid } = req.body;
+  console.log(password, email, uuid);
+
+  try {
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+
+    await user.update({ password: hash });
+
+    const request = await ResetRequests.findOne({ where: { requestId: uuid } });
+
+    if (!request || !request.isActive) {
+      return res
+        .status(404)
+        .json({ message: "Reset request not found or expired" });
+    }
+
+    await request.update({ isActive: false });
+
+    return res.status(200).json({ message: "Password changed successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Failed to change password" });
+  }
 };
 
 function generateToken(id, name, email) {

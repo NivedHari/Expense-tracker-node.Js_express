@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const sequelize = require("../Backend/utils/database");
@@ -7,6 +8,7 @@ const sequelize = require("../Backend/utils/database");
 const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
+const ResetRequest = require("./models/resetPassword");
 
 const userRoutes = require("./routes/user");
 const expenseRoutes = require("./routes/expense");
@@ -27,6 +29,12 @@ Expense.belongsTo(User, {
 User.hasMany(Expense);
 Order.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Order);
+User.hasMany(ResetRequest);
+ResetRequest.belongsTo(User);
+
+app.use(express.static(path.join(__dirname, "public")));
+console.log(express.static(path.join(__dirname, "public")))
+
 
 const PORT = 3000;
 sequelize
