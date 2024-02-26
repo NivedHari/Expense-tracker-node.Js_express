@@ -167,6 +167,8 @@ document.getElementById("premium-btn").onclick = function (e) {
 
 document.getElementById("leader-btn").onclick = function (e) {
   document.getElementById("leader-div").style.display = "block";
+  const leaderDiv = document.getElementById("leader-div");
+  leaderDiv.scrollIntoView({ behavior: "smooth" });
   const token = localStorage.getItem("token");
   fetch("http://localhost:3000/user/leaderboard", {
     headers: {
