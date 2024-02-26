@@ -166,9 +166,9 @@ document.getElementById("premium-btn").onclick = function (e) {
 };
 
 document.getElementById("leader-btn").onclick = function (e) {
-  document.getElementById("leader-div").style.display = 'block';
+  document.getElementById("leader-div").style.display = "block";
   const token = localStorage.getItem("token");
-  fetch("http://localhost:3000/expense/leaderboard", {
+  fetch("http://localhost:3000/user/leaderboard", {
     headers: {
       Authorization: token,
     },
@@ -185,20 +185,17 @@ function displayLeaderboard(expenses) {
   let listNumber = 1;
   leaderList.innerHTML = "";
   expenses.forEach((expense) => {
-    console.log(expense)
+    console.log(expense);
     const li = document.createElement("li");
-
-    
 
     const numberSpan = document.createElement("span");
     numberSpan.className = "number";
     numberSpan.textContent = listNumber;
     listNumber++;
 
-
     const nameSpan = document.createElement("span");
     nameSpan.className = "name";
-    nameSpan.textContent = expense["user.name"];
+    nameSpan.textContent = expense.name;
 
     const groupDiv = document.createElement("div");
     groupDiv.appendChild(numberSpan);
@@ -206,7 +203,7 @@ function displayLeaderboard(expenses) {
 
     const expenseSpan = document.createElement("span");
     expenseSpan.className = "expense";
-    expenseSpan.textContent = `$${expense.total}`;
+    expenseSpan.textContent = `$${expense.totalExpense}`;
 
     li.appendChild(groupDiv);
     li.appendChild(expenseSpan);

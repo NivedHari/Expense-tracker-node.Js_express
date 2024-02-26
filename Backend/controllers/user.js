@@ -95,20 +95,64 @@ exports.updatePremium = async (req, res, next) => {
     const order = await Order.findOne({ where: { orderId: order_id } });
 
     if (!order) {
-      return res.status(404).json({ success: false, message: "Order not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
     }
 
     await order.update({ paymentId: payment_id, status: "SUCCESS" });
 
     await req.user.update({ isPremium: true });
 
-    return res.status(202).json({ success: true, message: "Transaction Successful" });
+    return res
+      .status(202)
+      .json({ success: true, message: "Transaction Successful" });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
+exports.getLeaderboard = (req, res, next) => {
+  User.findAll({
+    attributes: ["name", "totalExpense"],
+    order: [["totalExpense", "DESC"]],
+  })
+    .then((expenses) => {
+      return res.json({ expenses });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  // Expense.findAll({
+  //   attributes: [
+  //     "userId",
+  //     [sequelize.fn("SUM", sequelize.col("amount")), "total"],
+  //   ],
+  //   group: ["userId"],
+  //   raw: true,
+  //   include: [
+  //     {
+  //       model: User,
+  //       attributes: ["name"],
+  //     },
+  //   ],
+  //   order: [[sequelize.literal("total"), "DESC"]],
+  // })
+  //   .then((expenses) => {
+  //     expenses.forEach((expense) => {
+  //       const userName = expense["user.name"];
+  //       const totalExpense = expense.total;
+  //       console.log(`User: ${userName}, Total Expenses: ${totalExpense}`);
+  //     });
+  //     return res.json({ expenses });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+};
 
 function generateToken(id, name, email) {
   return jwt.sign({ userId: id, name: name, email: email }, "12345678910");

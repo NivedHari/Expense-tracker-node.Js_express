@@ -19,4 +19,10 @@ router.post(
   userController.updatePremium
 );
 
+router.get(
+  "/user/leaderboard",
+  authorizationHandler.authenticateUser,
+  userController.getLeaderboard
+);
+
 module.exports = router;
