@@ -64,13 +64,21 @@ exports.postExpense = async (req, res, next) => {
 
 exports.getExpense = (req, res, next) => {
   const user = req.user;
+  const { limit, skip } = req.query;
+  console.log("limit and skip are", limit, skip);
   console.log(user);
-  Expense.findAll({ where: { userId: user.id } })
-    .then((expenses) => {
-      //   console.log(expenses);
-      return res.json({ expenses, user });
+  Expense.findAndCountAll({
+    where: { userId: user.id },
+    limit: Number(limit),
+    offset: Number(skip),
+  })
+    .then(({ count, rows: expenses }) => {
+      return res.json({ count, expenses, user });
     })
-    .catch();
+    .catch((error) => {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+    });
 };
 
 // exports.deleteExpense = (req, res, next) => {

@@ -37,13 +37,23 @@ function addExpense(event) {
       console.log(err);
     });
 }
-
-function fetchExpenses() {
+let page = 1;
+function fetchExpenses(action) {
   if (localStorage.getItem("token") === null) {
     window.location.href = "../User/login.html";
   }
+  if (action === "next") {
+    page++;
+  } else if (action === "prev" && page > 1) {
+    page--;
+  }
+
   const token = localStorage.getItem("token");
-  fetch("http://localhost:3000/expense", {
+  const postsPerPage = 3;
+  const skip = (page - 1) * postsPerPage;
+  const paginatedUrl = `http://localhost:3000/expense?limit=${postsPerPage}&skip=${skip}`;
+
+  fetch(`${paginatedUrl}`, {
     headers: {
       Authorization: token,
     },
@@ -58,10 +68,23 @@ function fetchExpenses() {
         downloadBtn.style.display = "flex";
       }
       displayExpenses(data.expenses);
+      console.log();
+      updatePagination(data.count);
     })
     .catch((err) => {
       console.log(err);
     });
+}
+
+function updatePagination(count) {
+  const totalPages = Math.ceil(count / 3);
+  document.getElementById(
+    "pageDisplay"
+  ).textContent = `Page ${page} of ${totalPages}`;
+  document.getElementById("prevPageBtn").disabled = page === 1;
+  document.getElementById("nextPageBtn").disabled = page === totalPages;
+  document.getElementById("prevPageBtn").style.display =
+    page > 1 ? "block" : "none";
 }
 
 function displayExpenses(expenses) {
