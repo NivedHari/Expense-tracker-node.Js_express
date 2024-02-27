@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Icons"
@@ -13,7 +14,8 @@
   <body>
     <div class="navbar">
       <div class="logo">
-        <span class="material-icons"> incomplete_circle</span>Expense Tracker<span id="premium-badge">Premium</span>
+        <span class="material-icons"> incomplete_circle</span>Expense
+        Tracker<span id="premium-badge">Premium</span>
       </div>
       <span id="logout">Logout</span>
     </div>
@@ -42,12 +44,18 @@
         <div class="form-action">
           <button type="submit" value="add-expense">Add expense</button>
           <button type="button" id="premium-btn">Get Premium</button>
-          <button type="button" id="leader-btn" href="#leader-div">Show Leaderboard</button>
+          <button type="button" id="leader-btn" href="#leader-div">
+            Show Leaderboard
+          </button>
         </div>
       </form>
     </div>
     <div class="list-div">
-      <h3>Recent Expenses</h3>
+      <div class="list-header">
+        <h3>Recent Expenses</h3>
+        <span class="material-symbols-outlined" id="download-btn"> download </span>
+      </div>
+
       <ul class="expense-list" id="expense-list"></ul>
     </div>
     <div class="leader-div" id="leader-div">

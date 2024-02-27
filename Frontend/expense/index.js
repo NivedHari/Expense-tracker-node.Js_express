@@ -1,8 +1,10 @@
 const form = document.querySelector(".form-control");
 const expenseList = document.getElementById("expense-list");
 const leaderList = document.getElementById("leader-list");
+const downloadBtn = document.getElementById("download-btn");
 
 form.addEventListener("submit", addExpense);
+downloadBtn.addEventListener("click", downloadExpense);
 
 function addExpense(event) {
   event.preventDefault();
@@ -53,6 +55,7 @@ function fetchExpenses() {
       } else if (data.user.isPremium) {
         document.getElementById("premium-badge").style.display = "block";
         document.getElementById("leader-btn").style.display = "block";
+        downloadBtn.style.display = "flex";
       }
       displayExpenses(data.expenses);
     })
@@ -213,6 +216,20 @@ function displayLeaderboard(expenses) {
     leaderList.appendChild(li);
   });
 }
+
+function downloadExpense() {
+  const token = localStorage.getItem("token");
+  fetch("http://localhost:3000/user/download", {
+    headers: {
+      Authorization: token,
+    },
+  })
+    .then()
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 
 document.getElementById("logout").addEventListener("click", logout);
 function logout(event) {

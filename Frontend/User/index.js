@@ -55,26 +55,31 @@ function addUser(event) {
     };
 
     fetch("http://localhost:3000/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          alert(response.statusText);
-          throw new Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        localStorage.setItem("token", data.token);
-        window.location.href = "../expense/expense.html";
-      })
-      .catch((err) => {
-        console.error("Error:", err);
-      });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(user),
+})
+  .then((response) => {
+    if (!response.ok) {
+      if (response.status === 401) {
+        throw new Error("Incorrect password");
+      } else {
+        throw new Error(response.statusText);
+      }
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data);
+    localStorage.setItem("token", data.token);
+    window.location.href = "../expense/expense.html";
+  })
+  .catch((err) => {
+    console.error("Error:", err);
+    alert(err.message); 
+  });
   } else if (mode === "forgot") {
     const email = document.getElementById("email").value;
 
@@ -85,10 +90,10 @@ function addUser(event) {
       },
       body: JSON.stringify({ email }),
     })
-    .then((data) => {
-      console.log("Success:", data);
-      form.reset();
-    })
+      .then((data) => {
+        console.log("Success:", data);
+        form.reset();
+      })
       .catch((err) => console.log(err));
   }
 }

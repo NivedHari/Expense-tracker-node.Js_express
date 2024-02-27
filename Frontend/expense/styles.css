@@ -123,6 +123,28 @@ body {
   align-items: flex-start;
   padding: 1.5rem;
 }
+
+.list-header span {
+  background-color: rgb(219, 220, 231);
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  display: none;
+}
+
+.list-header span:hover {
+  cursor: pointer;
+  background-color: rgb(207, 208, 226);
+}
+
+.list-header {
+  width: calc(100vw - 37rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .expense-list {
   list-style: none;
 }
@@ -242,21 +264,20 @@ li:hover .deleteBtn {
   display: none;
 }
 
-.leader-list{
+.leader-list {
   list-style: none;
 }
-
 
 .leader-list li {
   margin-left: -2.5rem;
   width: calc(100vw - 37rem);
-  margin-bottom: 2rem; 
+  margin-bottom: 2rem;
   padding: 1.5rem 0;
   display: flex;
   justify-content: space-between;
 }
 
-.name{
+.name {
   font-size: 1.3rem;
   font-weight: 500;
 }
@@ -288,5 +309,3 @@ li:hover .deleteBtn {
   text-align: center;
   position: relative;
 }  */
-
-

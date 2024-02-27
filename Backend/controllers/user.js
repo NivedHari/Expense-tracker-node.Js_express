@@ -55,14 +55,15 @@ exports.login = (req, res, next) => {
       bcrypt.compare(password, user.password, (err, response) => {
         if (err) {
           console.log(err);
-          return res.status(401).json({ message: "User not authorized" });
+          return res.status(500).json({ message: "Internal server error" });
         }
-        if (response) {
-          res.status(200).json({
-            message: "User login successful",
-            token: generateToken(user.id, user.name, user.email),
-          });
+        if (!response) {
+          return res.status(401).json({ message: "Incorrect password" });
         }
+        res.status(200).json({
+          message: "User login successful",
+          token: generateToken(user.id, user.name, user.email),
+        });
       });
     })
     .catch((err) => {
