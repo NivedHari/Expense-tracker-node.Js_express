@@ -137,32 +137,6 @@ exports.getLeaderboard = (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
-  // Expense.findAll({
-  //   attributes: [
-  //     "userId",
-  //     [sequelize.fn("SUM", sequelize.col("amount")), "total"],
-  //   ],
-  //   group: ["userId"],
-  //   raw: true,
-  //   include: [
-  //     {
-  //       model: User,
-  //       attributes: ["name"],
-  //     },
-  //   ],
-  //   order: [[sequelize.literal("total"), "DESC"]],
-  // })
-  //   .then((expenses) => {
-  //     expenses.forEach((expense) => {
-  //       const userName = expense["user.name"];
-  //       const totalExpense = expense.total;
-  //       console.log(`User: ${userName}, Total Expenses: ${totalExpense}`);
-  //     });
-  //     return res.json({ expenses });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
 };
 
 exports.forgotPassword = async (req, res, next) => {
@@ -188,8 +162,8 @@ exports.forgotPassword = async (req, res, next) => {
   console.log(resetUrl);
 
   const sender = {
-    email: "nivedhari44@gmail.com",
-    name: "Nived Hari",
+    email: process.env.SENDER_EMAIL,
+    name: process.env.SENDER_NAME,
   };
 
   const receivers = [{ email: `${userEmail}` }];
@@ -209,7 +183,6 @@ exports.forgotPassword = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   const uuid = req.params.uuid;
-  console.log(uuid);
   const resetRequest = await ResetRequests.findOne({
     where: { id: uuid },
   });
@@ -223,8 +196,6 @@ exports.resetPassword = async (req, res, next) => {
 
 exports.changePassword = async (req, res, next) => {
   const { password, email, uuid } = req.body;
-  console.log(password, email, uuid);
-
   try {
     const user = await User.findOne({ where: { email: email } });
     if (!user) {
@@ -252,8 +223,6 @@ exports.changePassword = async (req, res, next) => {
   }
 };
 
-
-
 function generateToken(id, name, email) {
-  return jwt.sign({ userId: id, name: name, email: email }, "12345678910");
+  return jwt.sign({ userId: id, name: name, email: email }, process.env.TOKEN);
 }

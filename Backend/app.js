@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
+const helmet = require("helmet");
+const morgan = require("morgan");
+const fs = require("fs");
 
 const sequelize = require("../Backend/utils/database");
 
@@ -21,6 +24,14 @@ app.use(express.json());
 app.use(userRoutes);
 app.use(expenseRoutes);
 
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
+
+app.use(helmet());
+app.use(morgan("combined", { stream: accessLogStream }));
+
 Expense.belongsTo(User, {
   constraints: true,
   onDelete: "CASCADE",
@@ -33,16 +44,13 @@ User.hasMany(ResetRequest);
 ResetRequest.belongsTo(User);
 
 app.use(express.static(path.join(__dirname, "public")));
-console.log(express.static(path.join(__dirname, "public")))
+console.log(express.static(path.join(__dirname, "public")));
 
-
-const PORT = 3000;
 sequelize
   .sync()
-  // .sync({ force: true })
   .then((result) => {
-    app.listen(PORT, function () {
-      console.log("Started application on port %d", PORT);
+    app.listen(process.env.PORT || 3000, function () {
+      console.log("Started application on port %d", process.env.PORT || 3000);
     });
   })
   .catch((err) => console.log(err));

@@ -50,6 +50,7 @@ function fetchExpenses(action) {
 
   const token = localStorage.getItem("token");
   const postsPerPage = document.getElementById("itemsPerPage").value;
+  localStorage.setItem("rows", postsPerPage);
   const skip = (page - 1) * postsPerPage;
   const paginatedUrl = `http://localhost:3000/expense?limit=${postsPerPage}&skip=${skip}`;
 
@@ -69,7 +70,7 @@ function fetchExpenses(action) {
       }
       displayExpenses(data.expenses);
       console.log();
-      updatePagination(data.count,postsPerPage);
+      updatePagination(data.count, postsPerPage);
     })
     .catch((err) => {
       console.log(err);
@@ -280,5 +281,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("token") === null) {
     window.location.href = "../User/login.html";
   }
+
+  document.getElementById("itemsPerPage").value =
+    localStorage.getItem("rows") || 3;
   fetchExpenses();
 });
