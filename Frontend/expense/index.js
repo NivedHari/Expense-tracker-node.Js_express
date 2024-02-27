@@ -219,17 +219,29 @@ function displayLeaderboard(expenses) {
 
 function downloadExpense() {
   const token = localStorage.getItem("token");
-  fetch("http://localhost:3000/user/download", {
+  fetch("http://localhost:3000/expense/download", {
     headers: {
       Authorization: token,
     },
   })
-    .then()
+    .then((response) => {
+      if (response.status === 200) {
+        console.log(response);
+        return response.json();
+      } else {
+        throw new Error(response.data.message);
+      }
+    })
+    .then((data) => {
+      var a = document.createElement("a");
+      a.href = data.fileURL;
+      a.download = "myexpense.csv";
+      a.click();
+    })
     .catch((err) => {
       console.log(err);
     });
 }
-
 
 document.getElementById("logout").addEventListener("click", logout);
 function logout(event) {

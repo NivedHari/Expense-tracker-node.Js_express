@@ -22,6 +22,12 @@ router.delete(
   expenseController.deleteExpense
 );
 
+router.get(
+  "/expense/download",
+  authorizationHandler.authenticateUser,
+  expenseController.downloadExpense
+);
+
 
 
 module.exports = router;

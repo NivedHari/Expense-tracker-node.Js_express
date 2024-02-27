@@ -1,6 +1,7 @@
 const Expense = require("../models/expense");
 const User = require("../models/user");
 const Sequelize = require("sequelize");
+const AWS = require("aws-sdk");
 
 const sequelize = require("../utils/database");
 
@@ -117,3 +118,41 @@ exports.deleteExpense = async (req, res, next) => {
     return res.status(500).json({ message: "Failed to delete expense" });
   }
 };
+
+exports.downloadExpense = async (req, res, next) => {
+  const userId = req.user.id;
+  const expense = await Expense.findAll({ where: { userId: userId } });
+  const stringifiedExpense = JSON.stringify(expense);
+  const fileName = `Expense:${userId}/${new Date()}`;
+  const fileURL = await uploadtoS3(stringifiedExpense, fileName);
+  res.status(200).json({ fileURL, success: true });
+};
+
+function uploadtoS3(data, fileName) {
+  return new Promise((resolve, reject) => {
+    const BUCKET_NAME = "expense-tracker21";
+    const IAM_USER_KEY = "AKIAYS2NSZ4FQMNJK45G";
+    const IAM_USER_SECRET = "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";
+
+    let bucket = new AWS.S3({
+      accessKeyId: IAM_USER_KEY,
+      secretAccessKey: IAM_USER_SECRET,
+    });
+
+    var params = {
+      Bucket: BUCKET_NAME,
+      Key: fileName,
+      Body: data,
+      ACL: "public-read",
+    };
+    bucket.upload(params, (err, s3response) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        console.log("success", s3response);
+        resolve(s3response.Location);
+      }
+    });
+  });
+}

@@ -252,6 +252,8 @@ exports.changePassword = async (req, res, next) => {
   }
 };
 
+
+
 function generateToken(id, name, email) {
   return jwt.sign({ userId: id, name: name, email: email }, "12345678910");
 }

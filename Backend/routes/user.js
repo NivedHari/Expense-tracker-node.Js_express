@@ -27,6 +27,7 @@ router.get(
   userController.getLeaderboard
 );
 
+
 router.post("/user/forgotPassword", userController.forgotPassword);
 
 
