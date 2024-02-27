@@ -49,7 +49,7 @@ function fetchExpenses(action) {
   }
 
   const token = localStorage.getItem("token");
-  const postsPerPage = 3;
+  const postsPerPage = document.getElementById("itemsPerPage").value;
   const skip = (page - 1) * postsPerPage;
   const paginatedUrl = `http://localhost:3000/expense?limit=${postsPerPage}&skip=${skip}`;
 
@@ -69,22 +69,26 @@ function fetchExpenses(action) {
       }
       displayExpenses(data.expenses);
       console.log();
-      updatePagination(data.count);
+      updatePagination(data.count,postsPerPage);
     })
     .catch((err) => {
       console.log(err);
     });
 }
 
-function updatePagination(count) {
-  const totalPages = Math.ceil(count / 3);
+function updatePagination(count, rows) {
+  let start = 0;
+  let end = rows;
+  const totalPages = Math.ceil(count / rows);
+  if (count > 0) {
+    start = (page - 1) * rows + 1;
+    end = Math.min(start + (rows - 1), count);
+  }
   document.getElementById(
     "pageDisplay"
-  ).textContent = `Page ${page} of ${totalPages}`;
+  ).textContent = `${start}-${end} of ${count}`;
   document.getElementById("prevPageBtn").disabled = page === 1;
   document.getElementById("nextPageBtn").disabled = page === totalPages;
-  document.getElementById("prevPageBtn").style.display =
-    page > 1 ? "block" : "none";
 }
 
 function displayExpenses(expenses) {
