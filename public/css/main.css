@@ -1,0 +1,252 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", Arial, sans-serif;
+}
+.material-icons-outlined {
+  font-family: "Material Symbols Outlined", sans-serif;
+}
+.navbar {
+  border-bottom: 1px solid #ccccccbf;
+  padding: 10px 0;
+  text-align: left;
+  align-items: left;
+  justify-content: center;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.navbar span {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: bolder;
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+}
+
+.user-actions {
+  position: absolute;
+  right: 3rem;
+  top: 0.7rem;
+  font-size: 1rem;
+  font: inherit;
+}
+
+#signup {
+  background-color: rgb(31, 113, 195);
+  color: white;
+  padding: 0.2rem 1rem;
+  border-radius: 10px;
+  font: inherit;
+}
+
+#login:hover {
+  cursor: pointer;
+  color: rgb(112, 112, 112);
+}
+
+#signup:hover {
+  background-color: rgb(54, 126, 197);
+  cursor: pointer;
+}
+
+.blue {
+  position: relative;
+  border-radius: 20px;
+  width: 70rem;
+  margin: auto;
+}
+
+.blue img {
+  width: 70rem;
+  height: 45rem;
+  display: block;
+  object-fit: fill;
+  border-radius: 15px;
+}
+
+.blue::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.448);
+}
+
+.overlay {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: left;
+  color: white;
+  width: 70rem;
+  padding-left: 3rem;
+  font: inherit;
+  z-index: 1;
+}
+.blue h1 {
+  color: white;
+  font-size: 3rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.blue p {
+  color: white;
+  font-size: 1.5rem;
+}
+
+.signup-btn {
+  background-color: rgb(54, 126, 197);
+  color: white;
+  padding: 0.3rem 1.5rem;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 15px;
+  z-index: 1;
+  font: inherit;
+}
+
+.login-btn {
+  background-color: white;
+  color: black;
+  padding: 0.3rem 1.5rem;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 20px;
+  z-index: 1;
+  margin-left: 1rem;
+  font: inherit;
+}
+.login-btn:hover {
+  background-color: rgb(227, 227, 227);
+}
+
+.signup-btn:hover{
+  background-color: rgb(43, 129, 214);
+}
+
+.login-btn,
+.signup-btn:hover {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#homeTag {
+  color: white;
+  background-color: rgb(43, 129, 214);
+  padding: 0.5rem 1.5rem;
+  border-radius: 15px;
+}
+
+.error {
+  text-align: center;
+  margin: auto;
+  margin-top:15rem;
+}
+
+
+@media screen and (max-width: 600px) {
+  body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-size: 0.8rem;
+  }
+
+  .navbar {
+    border-bottom: 1px solid #ccccccbf;
+    padding: 10px 0;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    margin: 0 1rem;
+    position: sticky;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .navbar span {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .logo {
+    font-size: 1rem;
+    font-weight: bolder;
+    margin: 0 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+  }
+
+  .user-actions {
+    position: static;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  #signup,
+  #login {
+    font-size: 1rem;
+    padding: 0.2rem 1rem;
+    border-radius: 10px;
+    margin: 0.5rem;
+  }
+
+  .blue {
+    width: 100%;
+    border-radius: 0;
+    margin-top: 0;
+  }
+
+  .blue img {
+    width: 100%;
+    height: auto;
+    border-radius: 0;
+  }
+
+  .overlay {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    padding-left: 1rem;
+    text-align: center;
+  }
+
+  .blue h1 {
+    font-size: 2rem;
+  }
+
+  .blue p {
+    font-size: 1rem;
+  }
+
+  .signup-btn,
+  .login-btn {
+    font-size: 1rem;
+    padding: 0.2rem 1rem;
+    border-radius: 10px;
+    margin: 0.5rem;
+  }
+}
