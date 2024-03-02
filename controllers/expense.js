@@ -1,5 +1,6 @@
 const Expense = require("../models/expense");
 const User = require("../models/user");
+const Download = require("../models/download");
 const Sequelize = require("sequelize");
 const AWS = require("aws-sdk");
 
@@ -96,11 +97,15 @@ exports.deleteExpense = async (req, res, next) => {
 };
 
 exports.downloadExpense = async (req, res, next) => {
+  const user = req.user;
   const userId = req.user.id;
   const expense = await Expense.findAll({ where: { userId: userId } });
   const stringifiedExpense = JSON.stringify(expense);
   const fileName = `Expense:${userId}/${new Date()}`;
   const fileURL = await uploadtoS3(stringifiedExpense, fileName);
+  await user.createDownload({
+    downloadUrl: fileURL,
+  });
   res.status(200).json({ fileURL, success: true });
 };
 
