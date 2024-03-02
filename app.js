@@ -15,6 +15,7 @@ const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
 const ResetRequest = require("./models/resetPassword");
+const Download = require("./models/download");
 
 const userRoutes = require("./routes/user");
 const expenseRoutes = require("./routes/expense");
@@ -36,13 +37,12 @@ app.use("/expense", expenseRoutes);
 app.use("/user", userRoutes);
 app.use(mainPageRouter);
 
-const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, "access.log"),
-  { flags: "a" }
-);
+// const accessLogStream = fs.createWriteStream(
+//   path.join(__dirname, "access.log"),
+//   { flags: "a" }
+// );
 
-// app.use(helmet());
-app.use(morgan("combined", { stream: accessLogStream }));
+// app.use(morgan("combined", { stream: accessLogStream }));
 
 Expense.belongsTo(User, {
   constraints: true,
@@ -54,6 +54,8 @@ Order.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Order);
 User.hasMany(ResetRequest);
 ResetRequest.belongsTo(User);
+User.hasMany(Download);
+Download.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 
 // Set Content Security Policy
 app.use(
@@ -66,10 +68,6 @@ app.use(
   })
 );
 
-// app.use((req, res) => {
-//   console.log("url", req.url);
-//   res.sendFile(path.join(__dirname, `public/${req.url}`));
-// });
 
 sequelize
   .sync()
