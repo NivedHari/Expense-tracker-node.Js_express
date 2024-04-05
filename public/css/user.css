@@ -73,29 +73,37 @@ body{
 }
 
 .navbar {
-    border-bottom: 1px solid #ccccccbf;
-    padding: 10px 0;
-    text-align: left;
-    align-items: left;
-    justify-content: center;
-    margin-left: 1rem;
-    margin-right: 1rem;
-  }
+  border-bottom: 1px solid #ccccccbf;
+  background-color: white;
+  color: black;
+  padding: 10px 0;
+  text-align: left;
+  align-items: left;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  justify-content: center;
+}
 
-  .navbar span{
-    margin-right: 1rem;
-    font-size: 1.2rem;
-  }
-  
-  .logo {
-    font-size: 1.2rem;
-    font-weight: bolder;
-    margin-left: 2rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
 
-  }
+.logo {
+  font-size: 1.2rem;
+  font-weight: bolder;
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+}
+
+.logo span {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
 
   @media screen and (max-width: 600px) {
 

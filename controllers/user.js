@@ -1,4 +1,3 @@
-const { response } = require("express");
 const User = require("../models/user");
 const Order = require("../models/order");
 const ResetRequests = require("../models/resetPassword");
