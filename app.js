@@ -1,5 +1,6 @@
 //start of app.js
 const express = require("express");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
@@ -9,7 +10,7 @@ const fs = require("fs");
 
 const PORT = process.env.PORT;
 
-const sequelize = require("./utils/database");
+
 
 const User = require("./models/user");
 const Expense = require("./models/expense");
@@ -42,18 +43,18 @@ const accessLogStream = fs.createWriteStream(
 
 app.use(morgan("combined", { stream: accessLogStream }));
 
-Expense.belongsTo(User, {
-  constraints: true,
-  onDelete: "CASCADE",
-  foreignKey: "userId",
-});
-User.hasMany(Expense);
-Order.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
-User.hasMany(Order);
-User.hasMany(ResetRequest);
-ResetRequest.belongsTo(User);
-User.hasMany(Download);
-Download.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+// Expense.belongsTo(User, {
+//   constraints: true,
+//   onDelete: "CASCADE",
+//   foreignKey: "userId",
+// });
+// User.hasMany(Expense);
+// Order.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+// User.hasMany(Order);
+// User.hasMany(ResetRequest);
+// ResetRequest.belongsTo(User);
+// User.hasMany(Download);
+// Download.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 
 
 app.use(
@@ -66,8 +67,10 @@ app.use(
 );
 
 
-sequelize
-  .sync()
+mongoose
+  .connect(
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@shop.belb8l9.mongodb.net/${process.env.MONGO_COLLECTION}?retryWrites=true&w=majority&appName=shop`
+  )
   .then(() => {
     app.listen(PORT, function () {
       console.log("Started application on port %d", process.env.PORT || 3000);

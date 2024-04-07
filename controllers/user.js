@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const Order = require("../models/order");
-const ResetRequests = require("../models/resetPassword");
+const ResetRequest = require("../models/resetPassword");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Razorpay = require("razorpay");
@@ -14,105 +14,91 @@ apiKey.apiKey = process.env.API_KEY;
 
 const tranEmailApi = new Sib.TransactionalEmailsApi();
 
-exports.signUp = (req, res, next) => {
-  const name = req.body.name;
-  const email = req.body.email;
-  const password = req.body.password;
+exports.signUp = async (req, res, next) => {
+  const { name, email, password } = req.body;
 
-  User.findOne({ where: { email: email } }).then((existingUser) => {
+  try {
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists" });
     }
-    bcrypt.hash(password, 10, async (err, hash) => {
-      if (err) {
-        console.log(err);
-      }
 
-      await User.create({
-        name,
-        email,
-        password: hash,
-      })
-        .then((user) => {
-          return res.status(201).json({ user });
-        })
-        .catch((err) => {
-          return res.status(500).json({ message: "Failed to create user" });
-        });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
     });
-  });
+
+    await newUser.save();
+
+    return res.status(201).json({ user: newUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Failed to create user" });
+  }
 };
 
-exports.login = (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  User.findOne({ where: { email: email } })
-    .then((user) => {
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-      bcrypt.compare(password, user.password, (err, response) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({ message: "Internal server error" });
-        }
-        if (!response) {
-          return res.status(401).json({ message: "Incorrect password" });
-        }
-        res.status(200).json({
-          message: "User login successful",
-          token: generateToken(user.id, user.name, user.email),
-        });
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({ message: "Internal server error" });
+exports.login = async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+    return res.status(200).json({
+      message: "User login successful",
+      token: generateToken(user.id, user.name, user.email),
     });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
-exports.handlePremium = (req, res, next) => {
+exports.handlePremium = async (req, res, next) => {
   const razorPay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
   });
   const amount = 2500;
-  razorPay.orders.create({ amount, currency: "INR" }, (err, order) => {
-    if (err) {
-      console.log(err);
-      return res.status(500).json({ message: "Failed to create order" });
-    }
-    req.user
-      .createOrder({ orderId: order.id, status: "PENDING" })
-      .then(() => {
-        return res
-          .status(201)
-          .json({ order, key_id: process.env.RAZORPAY_KEY_ID });
-      })
-      .catch((err) => {
-        console.log(err);
-        return res
-          .status(500)
-          .json({ message: "Failed to create order for user" });
-      });
-  });
+  try {
+    const order = await razorPay.orders.create({ amount, currency: "INR" });
+    const newOrder = new Order({
+      orderId: order.id,
+      status: "PENDING",
+      userId: req.user._id,
+    });
+    await newOrder.save();
+    return res.status(201).json({ order, key_id: process.env.RAZORPAY_KEY_ID });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Failed to create order" });
+  }
 };
 
 exports.updatePremium = async (req, res, next) => {
+  const payment_id = req.body.payment_id;
+  const order_id = req.body.order_id;
   try {
-    const payment_id = req.body.payment_id;
-    const order_id = req.body.order_id;
-    const order = await Order.findOne({ where: { orderId: order_id } });
+    const updatedOrder = await Order.findOneAndUpdate(
+      { orderId: order_id },
+      { paymentId: payment_id, status: "SUCCESS" },
+      { new: true }
+    );
 
-    if (!order) {
+    if (!updatedOrder) {
       return res
         .status(404)
         .json({ success: false, message: "Order not found" });
     }
 
-    await order.update({ paymentId: payment_id, status: "SUCCESS" });
-
-    await req.user.update({ isPremium: true });
+    await User.findByIdAndUpdate(req.user._id, { isPremium: true });
 
     return res
       .status(202)
@@ -125,23 +111,22 @@ exports.updatePremium = async (req, res, next) => {
   }
 };
 
-exports.getLeaderboard = (req, res, next) => {
-  User.findAll({
-    attributes: ["name", "totalExpense"],
-    order: [["totalExpense", "DESC"]],
-  })
-    .then((expenses) => {
-      return res.json({ expenses });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+exports.getLeaderboard = async (req, res, next) => {
+  try {
+    const expenses = await User.find()
+      .select("name totalExpense")
+      .sort({ totalExpense: -1 });
+    return res.json({ expenses });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.forgotPassword = async (req, res, next) => {
   const userEmail = req.body.email;
 
-  const user = await User.findOne({ where: { email: userEmail } });
+  const user = await User.findOne({ email: userEmail });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
@@ -150,10 +135,18 @@ exports.forgotPassword = async (req, res, next) => {
 
   console.log("request id:", requestId);
 
-  await user.createResetRequest({
+  // await user.createResetRequest({
+  //   requestId: requestId,
+  //   isActive: true,
+  // });
+
+  const newRequest = new ResetRequest({
     requestId: requestId,
     isActive: true,
+    userId: user._id,
   });
+
+  await newRequest.save();
 
   const resetUrl = `${process.env.WEBSITE}/user/password/resetpassword/${requestId}?email=${userEmail}`;
   const emailContent = `<h1>Reset Your Password</h1><hr> <h3>Click on the following button to <strong>reset your password</strong>:<br> ${resetUrl}</h3>`;
@@ -180,13 +173,9 @@ exports.forgotPassword = async (req, res, next) => {
     .catch(console.log);
 };
 
-
-
 exports.resetPassword = async (req, res, next) => {
   const uuid = req.params.uuid;
-  const resetRequest = await ResetRequests.findOne({
-    where: { id: uuid },
-  });
+  const resetRequest = await ResetRequests.findOne({ requestId: uuid });
   if (!resetRequest || !resetRequest.isActive) {
     return res
       .status(404)
@@ -198,24 +187,23 @@ exports.resetPassword = async (req, res, next) => {
 exports.changePassword = async (req, res, next) => {
   const { password, email, uuid } = req.body;
   try {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     const hash = await bcrypt.hash(password, 10);
 
-    await user.update({ password: hash });
+    await User.findOneAndUpdate({ _id: user._id }, { password: hash });
 
-    const request = await ResetRequests.findOne({ where: { requestId: uuid } });
+    const request = await ResetRequest.findOne({ requestId: uuid });
 
     if (!request || !request.isActive) {
       return res
         .status(404)
         .json({ message: "Reset request not found or expired" });
     }
-
-    await request.update({ isActive: false });
+    await ResetRequest.findOneAndUpdate({ _id: request._id }, { isActive: false });
 
     return res.status(200).json({ message: "Password changed successfully" });
   } catch (err) {

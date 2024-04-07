@@ -129,7 +129,7 @@ function displayExpenses(expenses) {
     const deleteBtn = document.createElement("button");
     deleteBtn.className = "deleteBtn";
     deleteBtn.innerHTML = `<span class="material-icons">delete</span>`;
-    deleteBtn.addEventListener("click", () => deleteExp(expense.id));
+    deleteBtn.addEventListener("click", () => deleteExp(expense._id));
 
     const priceSpan = document.createElement("span");
     priceSpan.className = "price";
